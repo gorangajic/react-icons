@@ -298,13 +298,13 @@ async function writeIconVersions() {
       await Promise.all(icon.contents.map(content => getIconFiles(content)))
     ).flat();
 
-    const firstDir = path.dirname(files[0]);
+    const firstDir = path.dirname(files[0]).replace(/\s/g, "\\ ");
     const packageJson = findPackage(firstDir, true);
 
     let gitVersion;
     if (!packageJson.version) {
       const { stdout } = await exec(
-        `cd ${firstDir} && git describe --tags || cd ${firstDir} && git rev-parse HEAD`
+        `(cd ${firstDir} && git describe --tags) || (cd ${firstDir} && git rev-parse HEAD)`
       );
       gitVersion = stdout.trim();
       console.log("stdout", icon.id, stdout);
